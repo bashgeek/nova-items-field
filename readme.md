@@ -33,13 +33,17 @@ public $casts = [
 Use Laravel's built in [array validation](https://laravel.com/docs/5.7/validation#validating-arrays)
 ```php
 Items::make('Emails')->rules([
-    'emails.*' => 'email|min:10',
+    null => 'required|min:2'
+    '*' => 'email|min:10',
 ]),
 ```
-Manually setting the attribute may be needed in some cases.
+In this case, an error is produced if there aren't at least 2 items in the array and if each item is not a valid email or is shorter than 10 characters.
+
+You might prefer to use explicit attribute names, the behaviour is exactly the same as before
 ```php
-Items::make('Long Text', 'attribute')->rules([
-    'attribute.*' => 'email|min:10',
+Items::make('Emails', 'user_email')->rules([
+    'user_email' => 'required|min:2',
+    'user_email.*' => 'email|min:10',
 ]),
 ```
 

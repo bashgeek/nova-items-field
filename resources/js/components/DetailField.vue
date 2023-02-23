@@ -1,14 +1,21 @@
 <template>
-    <PanelItem :index="index" :field="field" />
+    <PanelItem :field="field" >
+        <template #value>
+            <ul>
+                <li class="mb-1" v-for="value of fieldValue">
+                    <span class="text-gray-300 mr-2">&dash;</span>{{ value }}
+                </li>
+            </ul>
+        </template>
+    </PanelItem>
 </template>
 
 <script>
+import HasFieldValue from "../mixins/HasFieldValue";
+
 export default {
+    mixins: [HasFieldValue],
+
     props: ['resource', 'resourceName', 'resourceId', 'field'],
-    created() {
-      if (Array.isArray(this.field.value)) {
-          this.field.value = this.field.value.join(", ");
-      }
-    },
 }
 </script>

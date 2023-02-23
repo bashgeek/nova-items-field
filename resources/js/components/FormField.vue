@@ -30,7 +30,7 @@
                                     v-on:keyup="updateItem(index, $event)"
                                     :name="currentField.name + '['+ index +']'"
                                     autocomplete="new-password"
-                                    :class="{'border-danger': hasErrors(currentField.attribute + '.' + index)}"
+                                    :class="{'border-danger': hasErrors(index)}"
                                     class="flex-1 form-control form-input form-input-bordered"
                                 >
                                 <button
@@ -44,8 +44,8 @@
                                   <Icon type="x"/>
                                 </button>
                             </div>
-                            <HelpText class="mt-2 help-text-error" v-if="hasErrors(currentField.attribute + '.' + index)">
-                              {{ arrayErrors[currentField.attribute + '.' + index][0] }}
+                            <HelpText class="mt-2 help-text-error" v-if="hasErrors(index)">
+                              {{ arrayErrors[index][0] }}
                             </HelpText>
                         </li>
                     </template>
@@ -67,6 +67,9 @@
                  class="ml-3 cursor-pointer shadow relative bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-900 cursor-pointer rounded text-sm font-bold focus:outline-none focus:ring inline-flex items-center justify-center h-9 px-3 shadow relative bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-900"
                 />
             </div>
+            <HelpText class="mt-2 help-text-error" v-if="hasErrors()">
+                {{ arrayErrors[''][0] }}
+            </HelpText>
         </template>
     </DefaultField>
 </template>
@@ -77,9 +80,10 @@
 <script>
 import draggable from 'vuedraggable'
 import { DependentFormField, HandlesValidationErrors } from 'laravel-nova'
+import HasFieldValue from "../mixins/HasFieldValue";
 
 export default {
-    mixins: [DependentFormField, HandlesValidationErrors],
+    mixins: [DependentFormField, HandlesValidationErrors, HasFieldValue],
 
     props: ['resourceName', 'resourceId', 'field'],
 
@@ -96,8 +100,8 @@ export default {
 
     methods: {
         setInitialValue() {
-            this.value = this.field.value || [];
-            this.items = this.field.value || [];
+            this.value = JSON.stringify(this.fieldValue);
+            this.items = this.fieldValue;
         },
 
         fill(formData) {
@@ -127,7 +131,7 @@ export default {
         },
 
         hasErrors(key) {
-            return this.arrayErrors.hasOwnProperty(key);
+            return this.arrayErrors.hasOwnProperty(key ?? '');
 		}
     },
     computed: {
@@ -151,9 +155,7 @@ export default {
         },
         'errors': {
             handler: function (errors) {
-                if(errors.errors.hasOwnProperty(this.field.attribute)) {
-                    this.arrayErrors = JSON.parse(errors.errors[this.field.attribute][0])
-                }
+                this.arrayErrors = errors.errors.hasOwnProperty(this.field.attribute) ? JSON.parse(errors.errors[this.field.attribute][0]) : {};
             },
             deep: true
         }
