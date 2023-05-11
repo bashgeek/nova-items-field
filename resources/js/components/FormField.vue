@@ -155,7 +155,7 @@ export default {
         },
         'errors': {
             handler: function (errors) {
-                this.arrayErrors = errors.errors.hasOwnProperty(this.field.attribute) ? JSON.parse(errors.errors[this.field.attribute][0]) : {};
+                this.arrayErrors = errors.errors.hasOwnProperty(this.field.validationKey) ? JSON.parse(errors.errors[this.field.validationKey][0]) : {};
             },
             deep: true
         }
