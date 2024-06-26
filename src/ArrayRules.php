@@ -3,10 +3,10 @@
 namespace NovaItemsField;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-class ArrayRules implements ValidationRule
+class ArrayRules implements Rule
 {
     public $rules = [];
 
